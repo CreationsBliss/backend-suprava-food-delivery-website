@@ -51,6 +51,7 @@ const placeOrder = async (req, res) => {
   }
 };
 
+// verify order for frontend
 const verifyOrder = async (req, res) => {
   const { orderId, success } = req.body;
   try {
@@ -79,7 +80,7 @@ const userOrders = async (req, res) => {
 };
 
 // Listening orders for admin panel
-const listOrders = async () => {
+const listOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({});
     res.json({ success: true, data: orders });
@@ -89,4 +90,17 @@ const listOrders = async () => {
   }
 };
 
-export { listOrders, placeOrder, userOrders, verifyOrder };
+// api for updating order status
+const updateStatus = async (req, res) => {
+  try {
+    await orderModel.findByIdAndUpdate(req.body.orderId, {
+      status: req.body.status,
+    });
+    res.json({ success: true, message: "Status updated" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+export { listOrders, placeOrder, updateStatus, userOrders, verifyOrder };
